@@ -53,13 +53,30 @@ console.log('🔧 EMOLA_WALLET_ID:', process.env.EMOLA_WALLET_ID ? 'OK' : 'MISSI
 /* ---------------------------------------------
    Nodemailer Setup
 ----------------------------------------------*/
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
+    pass: process.env.EMAIL_PASS_APP,
+  },
 });
+
+function enviarEmail(destino, assunto, conteudoHTML) {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: destino,
+    subject: assunto,
+    html: conteudoHTML,
+  };
+
+  transporter.sendMail(mailOptions, (erro, info) => {
+    if (erro) {
+      console.error('❌ Erro ao enviar email:', erro);
+    } else {
+      console.log('📧 Email enviado com sucesso:', info.response);
+    }
+  });
+}
 
 /* ---------------------------------------------
    Helpers
